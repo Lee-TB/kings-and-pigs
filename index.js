@@ -1,5 +1,6 @@
 import { Player } from "./js/classes/Player.js";
 import { Input } from "./js/classes/Input.js";
+import { Sprite } from "./js/classes/Sprite.js";
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
@@ -9,18 +10,20 @@ canvas.height = 576; // 64 x 9
 
 const player = new Player();
 const input = new Input();
+const backgroundLevel1 = new Sprite({ position: { x: 0, y: 0 }, imageElement: document.querySelector('#backgroundLevel2') });
 
-function animate() {
-  ctx.fillStyle = "white";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+function animate() {  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  backgroundLevel1.draw(ctx)
   player.draw(ctx);
   player.update(canvas);
 
-  player.velocity.x = 0;
   if (input.activatedKeys.w.pressed || input.activatedKeys[" "].pressed) {
     if (player.velocity.y === 0) player.velocity.y = -7;
-  } else if (input.activatedKeys.a.pressed) player.velocity.x = -1;
-  else if (input.activatedKeys.d.pressed) player.velocity.x = 1;
+  }
+  player.velocity.x = 0;
+  if (input.activatedKeys.a.pressed) player.velocity.x = -2;
+  if (input.activatedKeys.d.pressed) player.velocity.x = 2;
 
   window.requestAnimationFrame(animate);
 }
