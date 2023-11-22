@@ -13,7 +13,7 @@ export class Player {
       y: 0,
     };
 
-    this.gravity = 0.1;
+    this.gravity = 0.2;
     this.bounce = 0;
 
     this.sides = {
@@ -27,14 +27,16 @@ export class Player {
   }
 
   update(canvas) {
+    this.position.x += this.velocity.x;
+    
     this.position.y += this.velocity.y;
-
-    // above bottom of Canvas
+    this.sides.bottom = this.position.y + this.height;
+    // bottom boundary
     if (this.sides.bottom + this.velocity.y < canvas.height) {
       this.velocity.y += this.gravity;
-      this.sides.bottom = this.position.y + this.height;
     } else {
       this.bounce = -this.velocity.y * 0.3;
+      this.bounce = Math.abs(this.bounce) < 1e-6 ? 0 : this.bounce;
       this.velocity.y = this.bounce;
     }
   }
