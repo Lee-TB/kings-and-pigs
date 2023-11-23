@@ -1,15 +1,17 @@
 import { Sprite } from "./Sprite.js";
-
-const playerSpriteImages = {
-  idleLeft: document.querySelector("#idleKingLeft"),
-  idleRight: document.querySelector("#idleKingRight"),
-}
+import {
+  STATES,
+  IdleLeft,
+  IdleRight,
+  RunLeft,
+  RunRight,
+} from "./PlayerState.js";
 
 export class Player extends Sprite {
   constructor({ position, collisionBlocks = [] }) {
     super({
       position: position,
-      image: playerSpriteImages.idleLeft,
+      image: document.querySelector("#kingRunLeft"),
       sprite: {
         width: 156,
         height: 116,
@@ -17,12 +19,10 @@ export class Player extends Sprite {
       frame: {
         x: 0,
         y: 0,
-        max: {
-          x: 10,
-        },
+        maxFrame: 7,
       },
-      fps: 30
-    });    
+      fps: 30,
+    });
 
     this.position = position;
 
@@ -38,17 +38,28 @@ export class Player extends Sprite {
 
     this.gravity = 0.2;
     this.bounce = 0;
+
+    this.states = {
+      [STATES.IDLE_LEFT]: new IdleLeft(this),
+      [STATES.IDLE_RIGHT]: new IdleRight(this),
+      [STATES.RUN_LEFT]: new RunLeft(this),
+      [STATES.RUN_RIGHT]: new RunRight(this),
+    };
+    this.setState(STATES.IDLE_LEFT)
   }
 
   draw(ctx) {
-    super.draw(ctx)
+    super.draw(ctx);
     ctx.strokeStyle = "blue";
-    // ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);    
-
+    // ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
   }
 
   update(deltaTime) {
     super.update(deltaTime);
+    
+    // check update state
+    this.currentState.update();
+
     // Horizontal Update
     this.position.x += this.velocity.x;
     this.handleHorizontalCollision();
@@ -57,6 +68,11 @@ export class Player extends Sprite {
     this.velocity.y += this.gravity; // Gravity
     this.position.y += this.velocity.y;
     this.handleVerticalCollision();
+  }
+
+  setState(state) {
+    this.currentState = this.states[state];
+    this.currentState.enter();
   }
 
   checkCollision(objectA, objectB) {
