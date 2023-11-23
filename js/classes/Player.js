@@ -5,8 +5,8 @@ export class Player {
       y: 300,
     };
 
-    this.width = 100;
-    this.height = 100;
+    this.width = 64;
+    this.height = 64;
 
     this.velocity = {
       x: 0,
