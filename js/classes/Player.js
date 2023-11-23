@@ -1,12 +1,35 @@
-export class Player {
-  constructor({ position, canvas, ctx, collisionBlocks = [] }) {
+import { Sprite } from "./Sprite.js";
+
+const playerSpriteImages = {
+  idleLeft: document.querySelector("#idleKingLeft"),
+  idleRight: document.querySelector("#idleKingRight"),
+}
+
+export class Player extends Sprite {
+  constructor({ position, collisionBlocks = [] }) {
+    super({
+      position: position,
+      image: playerSpriteImages.idleLeft,
+      sprite: {
+        width: 156,
+        height: 116,
+      },
+      frame: {
+        x: 0,
+        y: 0,
+        max: {
+          x: 10,
+        },
+      },
+      fps: 30
+    });    
+
     this.position = position;
-    this.canvas = canvas;
-    this.ctx = ctx;
+
     this.collisionBlocks = collisionBlocks;
 
-    this.width = 32;
-    this.height = 32;
+    this.width = 64;
+    this.height = 64;
 
     this.velocity = {
       x: 0,
@@ -17,23 +40,21 @@ export class Player {
     this.bounce = 0;
   }
 
-  draw() {
-    this.ctx.fillStyle = "red";
-    this.ctx.fillRect(
-      this.position.x,
-      this.position.y,
-      this.width,
-      this.height
-    );
+  draw(ctx) {
+    super.draw(ctx)
+    ctx.strokeStyle = "blue";
+    // ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);    
+
   }
 
-  update() {
+  update(deltaTime) {
+    super.update(deltaTime);
     // Horizontal Update
     this.position.x += this.velocity.x;
     this.handleHorizontalCollision();
 
     // Vertical Update
-    this.velocity.y += this.gravity; // Gravity    
+    this.velocity.y += this.gravity; // Gravity
     this.position.y += this.velocity.y;
     this.handleVerticalCollision();
   }

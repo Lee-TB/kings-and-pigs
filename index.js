@@ -8,8 +8,13 @@ canvas.height = 576; // 64 x 9
 
 const game = new Game({ canvas, ctx });
 
-function animate() {
-  game.render();
+let lastTime = 0;
+function animate(timeStamp = 0) {
+  const deltaTime = timeStamp - lastTime;
+  lastTime = timeStamp;
+  
+  game.render(deltaTime);
+
   window.requestAnimationFrame(animate);
 }
 animate();

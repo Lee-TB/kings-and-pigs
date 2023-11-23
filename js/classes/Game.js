@@ -2,6 +2,7 @@ import "../utils/Array.js";
 import { Player } from "./Player.js";
 import { Input } from "./Input.js";
 import { Sprite } from "./Sprite.js";
+import { Background } from "./Background.js";
 import { CollisionBlock } from "./CollisionBlock.js";
 import { collisionsLevel3 } from "../data/collisions.js";
 
@@ -12,7 +13,6 @@ export class Game {
 
     this.collisionBlocks = [];
     this.createCollisionBlockObjects();
-    console.log(this.collisionBlocks);
 
     this.player = new Player({
       position: {
@@ -21,33 +21,44 @@ export class Game {
       },
       canvas,
       ctx,
-      collisionBlocks: this.collisionBlocks
+      collisionBlocks: this.collisionBlocks,
     });
     this.input = new Input();
-    this.backgroundLevel3 = new Sprite({
-      position: { x: 0, y: 0 },
-      imageElement: document.querySelector("#backgroundLevel3"),
-    });
-   
+    this.backgroundLevels = [
+      new Background({
+        position: { x: 0, y: 0 },
+        image: document.querySelector("#backgroundLevel1"),
+      }),
+      new Background({
+        position: { x: 0, y: 0 },
+        image: document.querySelector("#backgroundLevel2"),
+      }),
+      new Background({
+        position: { x: 0, y: 0 },
+        image: document.querySelector("#backgroundLevel3"),
+      }),
+    ];
   }
 
-  render() {
+  render(deltaTime) {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.backgroundLevel3.draw(this.ctx);
+
+    this.backgroundLevels[2].draw(this.ctx);
     this.collisionBlocks.forEach((collisionBlock) => {
       collisionBlock.draw(this.ctx);
     });
-    this.player.draw();
-    this.player.update();
-    this.playerMovement(); 
+
+    this.player.draw(this.ctx);
+    this.player.update(deltaTime);
+    this.playerMovement();
   }
 
-  playerMovement() {  
+  playerMovement() {
     if (
       this.input.activatedKeys.w.pressed ||
       this.input.activatedKeys[" "].pressed
     ) {
-      if(this.player.velocity.y === 0) this.player.velocity.y = -7;
+      if (this.player.velocity.y === 0) this.player.velocity.y = -7;
     }
 
     this.player.velocity.x = 0;
@@ -57,7 +68,6 @@ export class Game {
 
   createCollisionBlockObjects() {
     const collisions2D = collisionsLevel3.chunk(16);
-    console.log(collisions2D);
     collisions2D.forEach((row, yIndex) => {
       row.forEach((cell, xIndex) => {
         if (cell === 292) {
