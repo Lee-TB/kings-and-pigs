@@ -1,12 +1,12 @@
 export class Player {
-  constructor() {
-    this.position = {
-      x: 200,
-      y: 300,
-    };
+  constructor({ position, canvas, ctx, collisionBlocks = [] }) {
+    this.position = position;
+    this.canvas = canvas;
+    this.ctx = ctx;
+    this.collisionBlocks = collisionBlocks;
 
-    this.width = 64;
-    this.height = 64;
+    this.width = 32;
+    this.height = 32;
 
     this.velocity = {
       x: 0,
@@ -15,29 +15,80 @@ export class Player {
 
     this.gravity = 0.2;
     this.bounce = 0;
-
-    this.sides = {
-      bottom: this.position.y + this.height,
-    };
   }
 
-  draw(ctx) {
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+  draw() {
+    this.ctx.fillStyle = "red";
+    this.ctx.fillRect(
+      this.position.x,
+      this.position.y,
+      this.width,
+      this.height
+    );
   }
 
-  update(canvas) {
+  update() {
+    // Horizontal Update
     this.position.x += this.velocity.x;
+    this.handleHorizontalCollision();
 
+    // Vertical Update
+    this.velocity.y += this.gravity; // Gravity    
     this.position.y += this.velocity.y;
-    this.sides.bottom = this.position.y + this.height;
-    // bottom boundary
-    if (this.sides.bottom + this.velocity.y < canvas.height) {
-      this.velocity.y += this.gravity;
-    } else {
-      this.bounce = -this.velocity.y * 0.3;
-      this.bounce = Math.abs(this.bounce) < 1e-6 ? 0 : this.bounce;
-      this.velocity.y = this.bounce;
+    this.handleVerticalCollision();
+  }
+
+  checkCollision(objectA, objectB) {
+    return (
+      objectA.position.x <= objectB.position.x + objectB.width &&
+      objectA.position.x + objectA.width >= objectB.position.x &&
+      objectA.position.y <= objectB.position.y + objectB.height &&
+      objectA.position.y + objectA.height >= objectB.position.y
+    );
+  }
+
+  handleHorizontalCollision() {
+    for (let i = 0; i < this.collisionBlocks.length; i++) {
+      const collisionBlock = this.collisionBlocks[i];
+      if (this.checkCollision(collisionBlock, this)) {
+        // Wall slide
+        this.velocity.y *= 0.8;
+
+        // To left
+        if (this.velocity.x < 0) {
+          this.position.x =
+            collisionBlock.position.x + collisionBlock.width + 0.1;
+          break;
+        }
+        // To right
+        if (this.velocity.x > 0) {
+          this.position.x = collisionBlock.position.x - this.width - 0.1;
+          break;
+        }
+      }
+    }
+  }
+
+  handleVerticalCollision() {
+    for (let i = 0; i < this.collisionBlocks.length; i++) {
+      const collisionBlock = this.collisionBlocks[i];
+      if (this.checkCollision(collisionBlock, this)) {
+        // Bottom up
+        if (this.velocity.y < 0) {
+          this.position.y =
+            collisionBlock.position.y + collisionBlock.height + 0.1;
+          this.velocity.y = Math.abs(this.velocity.y * 0.01);
+          break;
+        }
+        // Top down
+        if (this.velocity.y > 0) {
+          this.position.y = collisionBlock.position.y - this.height - 0.1;
+          this.bounce = -this.velocity.y * 0.3;
+          this.bounce = Math.abs(this.bounce) < 1e-1 ? 0 : this.bounce;
+          this.velocity.y = this.bounce;
+          break;
+        }
+      }
     }
   }
 }
