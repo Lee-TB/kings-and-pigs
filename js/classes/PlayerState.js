@@ -21,7 +21,7 @@ export class IdleLeft extends PlayerState {
     this.player.image = this.image;
     this.player.maxFrame = 10;    
   }
-  update() {
+  update() {    
     if (this.player.velocity.x < 0) {
       this.player.setState(STATES.RUN_LEFT);
     }
@@ -63,6 +63,9 @@ export class RunRight extends PlayerState {
     if (this.player.velocity.x === 0) {
       this.player.setState(STATES.IDLE_RIGHT);
     }
+    if (this.player.velocity.x < 0) {
+      this.player.setState(STATES.RUN_LEFT);
+    }
   }
 }
 
@@ -78,6 +81,9 @@ export class RunLeft extends PlayerState {
   update() {
     if (this.player.velocity.x === 0) {
       this.player.setState(STATES.IDLE_LEFT);
+    }
+    if (this.player.velocity.x > 0) {
+      this.player.setState(STATES.RUN_RIGHT);
     }
   }
 }

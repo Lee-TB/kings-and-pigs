@@ -19,8 +19,8 @@ export class Player extends Sprite {
       frame: {
         x: 0,
         y: 0,
-        maxFrame: 7,
       },
+      maxFrame: 7,
       fps: 30,
     });
 

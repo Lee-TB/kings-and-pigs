@@ -9,10 +9,10 @@ export class Sprite {
     this.timer = 0;
   }
 
-  update(deltaTime) {    
+  update(deltaTime) {       
     if(this.timer > this.interval) {
       this.timer = 0;
-      if (this.frame.x >= this.frame.maxFrame) this.frame.x = 0;
+      if (this.frame.x >= this.maxFrame) this.frame.x = 0;
       else this.frame.x += 1;    
     } else this.timer += deltaTime;
   }
