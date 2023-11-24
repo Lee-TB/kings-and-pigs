@@ -1,7 +1,6 @@
 import "../utils/Array.js";
 import { Player } from "./Player.js";
 import { Input } from "./Input.js";
-import { Sprite } from "./Sprite.js";
 import { Background } from "./Background.js";
 import { CollisionBlock } from "./CollisionBlock.js";
 import { collisionsLevel3 } from "../data/collisions.js";
@@ -19,8 +18,6 @@ export class Game {
         x: 64 * 3,
         y: 64 * 3,
       },
-      canvas,
-      ctx,
       collisionBlocks: this.collisionBlocks,
     });
     this.input = new Input();

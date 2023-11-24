@@ -29,7 +29,7 @@ export class Player extends Sprite {
     this.collisionBlocks = collisionBlocks;
 
     this.width = 64;
-    this.height = 64;
+    this.height = 48;
 
     this.velocity = {
       x: 0,
@@ -49,9 +49,19 @@ export class Player extends Sprite {
   }
 
   draw(ctx) {
-    super.draw(ctx);
     ctx.strokeStyle = "blue";
-    // ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
+    ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.frame.x * this.sprite.width,
+      this.frame.y * this.sprite.height,
+      this.sprite.width,
+      this.sprite.height,
+      this.position.x - this.sprite.width * 0.3,
+      this.position.y - this.sprite.height * 0.33,
+      this.sprite.width,
+      this.sprite.height
+    );
   }
 
   update(deltaTime) {
