@@ -1,5 +1,14 @@
+let instance = null;
+
 export class Input {
   constructor() {
+    if(instance) {
+      return instance;
+    }
+    instance = this;
+
+    console.log('new Input object');
+
     this.activatedKeys = {
       w: {
         pressed: false
@@ -48,3 +57,4 @@ export class Input {
     });
   }
 }
+
