@@ -2,26 +2,27 @@ let instance = null;
 
 export class Input {
   constructor() {
-    if(instance) {
+    if (instance) {
       return instance;
     }
     instance = this;
 
-    console.log('new Input object');
-
     this.activatedKeys = {
       w: {
-        pressed: false
+        pressed: false,
       },
       " ": {
-        pressed: false
+        pressed: false,
       },
       a: {
-        pressed: false
+        pressed: false,
       },
       d: {
-        pressed: false
-      }
+        pressed: false,
+      },
+      e: {
+        pressed: false,
+      },
     };
 
     window.addEventListener("keydown", (event) => {
@@ -35,6 +36,9 @@ export class Input {
           this.activatedKeys[key].pressed = true;
           break;
         case "d":
+          this.activatedKeys[key].pressed = true;
+          break;
+        case "e":
           this.activatedKeys[key].pressed = true;
           break;
       }
@@ -53,8 +57,10 @@ export class Input {
         case "d":
           this.activatedKeys[key].pressed = false;
           break;
+        case "e":
+          this.activatedKeys[key].pressed = false;
+          break;
       }
     });
   }
 }
-

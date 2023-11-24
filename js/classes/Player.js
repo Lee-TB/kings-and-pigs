@@ -5,6 +5,7 @@ import {
   IdleRight,
   RunLeft,
   RunRight,
+  EnterDoor,
 } from "./PlayerState.js";
 
 export class Player extends Sprite {
@@ -12,14 +13,8 @@ export class Player extends Sprite {
     super({
       position: position,
       image: document.querySelector("#kingRunLeft"),
-      sprite: {
-        width: 156,
-        height: 116,
-      },
-      frame: {
-        x: 0,
-        y: 0,
-      },
+      spriteWidth: 156,
+      spriteHeight: 116,
       maxFrame: 7,
       fps: 30,
     });
@@ -28,7 +23,7 @@ export class Player extends Sprite {
 
     this.collisionBlocks = collisionBlocks;
 
-    this.width = 64;
+    this.width = 48;
     this.height = 48;
 
     this.velocity = {
@@ -44,8 +39,9 @@ export class Player extends Sprite {
       [STATES.IDLE_RIGHT]: new IdleRight(this),
       [STATES.RUN_LEFT]: new RunLeft(this),
       [STATES.RUN_RIGHT]: new RunRight(this),
+      [STATES.ENTER_DOOR]: new EnterDoor(this),
     };
-    this.setState(STATES.IDLE_LEFT)
+    this.setState(STATES.IDLE_RIGHT);
   }
 
   draw(ctx) {
@@ -53,20 +49,20 @@ export class Player extends Sprite {
     ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
     ctx.drawImage(
       this.image,
-      this.frame.x * this.sprite.width,
-      this.frame.y * this.sprite.height,
-      this.sprite.width,
-      this.sprite.height,
-      this.position.x - this.sprite.width * 0.3,
-      this.position.y - this.sprite.height * 0.33,
-      this.sprite.width,
-      this.sprite.height
+      this.frameX * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.position.x - this.spriteWidth * 0.35,
+      this.position.y - this.spriteHeight * 0.35,
+      this.spriteWidth,
+      this.spriteHeight
     );
   }
 
   update(deltaTime) {
     super.update(deltaTime);
-    
+
     // check update state
     this.currentState.update();
 
@@ -81,23 +77,29 @@ export class Player extends Sprite {
   }
 
   setState(state) {
-    this.currentState = this.states[state];
+    const newState = this.states[state];
+    if (
+      this.currentState &&
+      this.currentState.constructor === newState.constructor
+    )
+      return;      
+    this.currentState = newState;
     this.currentState.enter();
   }
 
-  checkCollision(objectA, objectB) {
+  checkCollision(object) {
     return (
-      objectA.position.x <= objectB.position.x + objectB.width &&
-      objectA.position.x + objectA.width >= objectB.position.x &&
-      objectA.position.y <= objectB.position.y + objectB.height &&
-      objectA.position.y + objectA.height >= objectB.position.y
+      this.position.x <= object.position.x + object.width &&
+      this.position.x + this.width >= object.position.x &&
+      this.position.y <= object.position.y + object.height &&
+      this.position.y + this.height >= object.position.y
     );
   }
 
   handleHorizontalCollision() {
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
-      if (this.checkCollision(collisionBlock, this)) {
+      if (this.checkCollision(collisionBlock)) {
         // Wall slide
         this.velocity.y *= 0.8;
 
@@ -119,7 +121,7 @@ export class Player extends Sprite {
   handleVerticalCollision() {
     for (let i = 0; i < this.collisionBlocks.length; i++) {
       const collisionBlock = this.collisionBlocks[i];
-      if (this.checkCollision(collisionBlock, this)) {
+      if (this.checkCollision(collisionBlock)) {
         // Bottom up
         if (this.velocity.y < 0) {
           this.position.y =

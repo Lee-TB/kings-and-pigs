@@ -1,3 +1,5 @@
+import { Input } from "./Input.js";
+
 export const STATES = {
   IDLE_RIGHT: 0,
   IDLE_LEFT: 1,
@@ -7,8 +9,9 @@ export const STATES = {
 };
 
 class PlayerState {
-  constructor(player) {
+  constructor(player) {    
     this.player = player;
+    this.input = new Input();
   }
 }
 
@@ -19,9 +22,9 @@ export class IdleLeft extends PlayerState {
   }
   enter() {
     this.player.image = this.image;
-    this.player.maxFrame = 10;    
+    this.player.maxFrame = 10;
   }
-  update() {    
+  update() {
     if (this.player.velocity.x < 0) {
       this.player.setState(STATES.RUN_LEFT);
     }
@@ -85,5 +88,22 @@ export class RunLeft extends PlayerState {
     if (this.player.velocity.x > 0) {
       this.player.setState(STATES.RUN_RIGHT);
     }
+  }
+}
+
+export class EnterDoor extends PlayerState {
+  constructor(player) {
+    super(player);
+    this.image = document.querySelector("#kingEnterDoor");
+  }
+  enter() {
+    this.player.loop = false;
+    this.player.setFPS(10);    
+    this.player.image = this.image;
+    this.player.frameX = 0;
+    this.player.maxFrame = 7;
+  }
+  update() {
+    this.player.velocity.x *= 0.1;
   }
 }
