@@ -1,11 +1,11 @@
-let instance = null;
+let inputInstance = null;
 
 export class Input {
   constructor() {
-    if (instance) {
-      return instance;
+    if (inputInstance) {
+      return inputInstance;
     }
-    instance = this;
+    inputInstance = this;
 
     this.activatedKeys = {
       w: {

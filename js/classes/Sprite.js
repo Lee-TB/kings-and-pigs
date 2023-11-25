@@ -27,7 +27,7 @@ export class Sprite {
     this.interval = 1000 / this.fps;
   }
 
-  draw(ctx) {
+  draw(ctx) {    
     ctx.drawImage(
       this.image,
       this.frameX * this.spriteWidth,
@@ -42,15 +42,16 @@ export class Sprite {
   }
 
   update(deltaTime) {
-    if (this.autoplay) {      
+    if (this.autoplay) {
       if (this.timer > this.interval) {
         this.timer = 0;
         if (this.loop) {
           if (this.frameX >= this.maxFrame) this.frameX = 0;
           else this.frameX += 1;
         } else {
-          if (this.frameX >= this.maxFrame) this.frameX = this.maxFrame;
-          else this.frameX += 1;
+          if (this.frameX >= this.maxFrame) {
+            this.frameX = this.maxFrame;
+          } else this.frameX += 1;
         }
       } else this.timer += deltaTime;
     }

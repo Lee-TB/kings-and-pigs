@@ -15,14 +15,30 @@ export class Door extends Sprite {
     this.width = width;
     this.height = height;
     this.hitbox = {
-      position: {...this.position, x: this.position.x + this.width*0.45},
-      width: this.width/6,
-      height: this.height
-    }
+      position: { ...this.position, x: this.position.x + this.width * 0.45 },
+      width: this.width / 6,
+      height: this.height,
+    };
   }
 
   draw(ctx) {
     super.draw(ctx);
-    ctx.fillRect(this.hitbox.position.x, this.hitbox.position.y, this.hitbox.width, this.hitbox.height);
+    ctx.save();
+    ctx.fillStyle = "rgba(255,0,0,0.5)";
+    ctx.fillRect(
+      this.hitbox.position.x,
+      this.hitbox.position.y,
+      this.hitbox.width,
+      this.hitbox.height
+    );
+    ctx.restore();
+  }
+
+  update(deltaTime) {
+    super.update(deltaTime);
+
+    if (!this.loop && this.autoplay && this.frameX === this.maxFrame) {
+      if (this.onComplete) this.onComplete();
+    }
   }
 }

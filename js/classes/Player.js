@@ -11,8 +11,8 @@ import {
 export class Player extends Sprite {
   constructor({ position, collisionBlocks = [] }) {
     super({
+      image: document.querySelector('#kingIdleRight'),
       position: position,
-      image: document.querySelector("#kingRunLeft"),
       spriteWidth: 156,
       spriteHeight: 116,
       maxFrame: 7,
@@ -44,26 +44,33 @@ export class Player extends Sprite {
     this.setState(STATES.IDLE_RIGHT);
   }
 
+  set({ position = this.position, collisionBlocks = [], state = STATES.IDLE_RIGHT }) {
+    this.position = position;
+    this.collisionBlocks = collisionBlocks;
+    this.setState(state)
+  }
+
   draw(ctx) {
     ctx.strokeStyle = "blue";
     ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
-    ctx.drawImage(
-      this.image,
-      this.frameX * this.spriteWidth,
-      0,
-      this.spriteWidth,
-      this.spriteHeight,
-      this.position.x - this.spriteWidth * 0.35,
-      this.position.y - this.spriteHeight * 0.35,
-      this.spriteWidth,
-      this.spriteHeight
-    );
+    
+      ctx.drawImage(
+        this.image,
+        this.frameX * this.spriteWidth,
+        0,
+        this.spriteWidth,
+        this.spriteHeight,
+        this.position.x - this.spriteWidth * 0.35,
+        this.position.y - this.spriteHeight * 0.35,
+        this.spriteWidth,
+        this.spriteHeight
+      );
   }
 
   update(deltaTime) {
     super.update(deltaTime);
 
-    // check update state
+    // Player State Update
     this.currentState.update();
 
     // Horizontal Update
@@ -71,8 +78,7 @@ export class Player extends Sprite {
     this.handleHorizontalCollision();
 
     // Vertical Update
-    this.velocity.y += this.gravity; // Gravity
-    this.position.y += this.velocity.y;
+    this.applyGravity();
     this.handleVerticalCollision();
   }
 
@@ -82,7 +88,7 @@ export class Player extends Sprite {
       this.currentState &&
       this.currentState.constructor === newState.constructor
     )
-      return;      
+      return;
     this.currentState = newState;
     this.currentState.enter();
   }
@@ -133,11 +139,16 @@ export class Player extends Sprite {
         if (this.velocity.y > 0) {
           this.position.y = collisionBlock.position.y - this.height - 0.1;
           this.bounce = -this.velocity.y * 0.3;
-          this.bounce = Math.abs(this.bounce) < 1e-1 ? 0 : this.bounce;
+          this.bounce = Math.abs(this.bounce) < 0.1 ? 0 : this.bounce;
           this.velocity.y = this.bounce;
           break;
         }
       }
     }
+  }
+
+  applyGravity() {
+    this.velocity.y += this.gravity;
+    this.position.y += this.velocity.y;
   }
 }
