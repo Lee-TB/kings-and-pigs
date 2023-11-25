@@ -7,15 +7,16 @@ import {
   RunRight,
   EnterDoor,
 } from "./PlayerState.js";
+import { Input } from "./Input.js";
 
 export class Player extends Sprite {
   constructor({ position, collisionBlocks = [] }) {
     super({
-      image: document.querySelector('#kingIdleRight'),
       position: position,
       spriteWidth: 156,
       spriteHeight: 116,
-      maxFrame: 7,
+      image: document.querySelector("#kingIdleRight"),
+      maxFrame: 10,
       fps: 30,
     });
 
@@ -42,29 +43,39 @@ export class Player extends Sprite {
       [STATES.ENTER_DOOR]: new EnterDoor(this),
     };
     this.setState(STATES.IDLE_RIGHT);
+
+    this.input = new Input();
   }
 
-  set({ position = this.position, collisionBlocks = [], state = STATES.IDLE_RIGHT }) {
+  set({
+    position = this.position,
+    collisionBlocks = [],
+    state = STATES.IDLE_RIGHT,
+  }) {
     this.position = position;
     this.collisionBlocks = collisionBlocks;
-    this.setState(state)
+    this.setState(state);
   }
 
   draw(ctx) {
-    ctx.strokeStyle = "blue";
-    ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
-    
-      ctx.drawImage(
-        this.image,
-        this.frameX * this.spriteWidth,
-        0,
-        this.spriteWidth,
-        this.spriteHeight,
-        this.position.x - this.spriteWidth * 0.35,
-        this.position.y - this.spriteHeight * 0.35,
-        this.spriteWidth,
-        this.spriteHeight
-      );
+    ctx.save();
+    if (this.input.debug) {
+      ctx.strokeStyle = "blue";
+      ctx.strokeRect(this.position.x, this.position.y, this.width, this.height);
+    }
+
+    ctx.drawImage(
+      this.image,
+      this.frameX * this.spriteWidth,
+      0,
+      this.spriteWidth,
+      this.spriteHeight,
+      this.position.x - this.spriteWidth * 0.35,
+      this.position.y - this.spriteHeight * 0.35,
+      this.spriteWidth,
+      this.spriteHeight
+    );
+    ctx.restore();
   }
 
   update(deltaTime) {

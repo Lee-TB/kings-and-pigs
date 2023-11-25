@@ -41,11 +41,11 @@ export class Sprite {
     );
   }
 
-  update(deltaTime) {
+  update(deltaTime) {    
     if (this.autoplay) {
       if (this.timer > this.interval) {
         this.timer = 0;
-        if (this.loop) {
+        if (this.loop) {          
           if (this.frameX >= this.maxFrame) this.frameX = 0;
           else this.frameX += 1;
         } else {

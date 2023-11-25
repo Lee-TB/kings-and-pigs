@@ -1,3 +1,4 @@
+import { Input } from "./Input.js";
 import { Sprite } from "./Sprite.js";
 
 export class Door extends Sprite {
@@ -12,6 +13,7 @@ export class Door extends Sprite {
       loop: false,
       autoplay: false,
     });
+    this.input = new Input();
     this.width = width;
     this.height = height;
     this.hitbox = {
@@ -23,22 +25,24 @@ export class Door extends Sprite {
 
   draw(ctx) {
     super.draw(ctx);
-    ctx.save();
-    ctx.fillStyle = "rgba(255,0,0,0.5)";
-    ctx.fillRect(
-      this.hitbox.position.x,
-      this.hitbox.position.y,
-      this.hitbox.width,
-      this.hitbox.height
-    );
-    ctx.restore();
+    if(this.input.debug) {
+      ctx.save();
+      ctx.fillStyle = "rgba(255,0,0,0.5)";
+      ctx.fillRect(
+        this.hitbox.position.x,
+        this.hitbox.position.y,
+        this.hitbox.width,
+        this.hitbox.height
+      );
+      ctx.restore();
+    }
   }
 
   update(deltaTime) {
     super.update(deltaTime);
 
     if (!this.loop && this.autoplay && this.frameX === this.maxFrame) {
-      if (this.onComplete) this.onComplete();
+      if (this.onOpen) this.onOpen();
     }
   }
 }

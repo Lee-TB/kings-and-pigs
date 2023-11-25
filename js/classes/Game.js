@@ -15,7 +15,7 @@ import { STATES } from "./PlayerState.js";
 export class Game {
   constructor({ canvas, ctx }) {
     this.canvas = canvas;
-    this.ctx = ctx;    
+    this.ctx = ctx;
 
     this.player = new Player({
       position: {
@@ -26,7 +26,8 @@ export class Game {
 
     this.input = new Input();
 
-    this.level = 3;
+    this.maxLevel = 3;
+    this.level = 1;
     this.levels = {
       1: {
         background: new Background({
@@ -46,7 +47,7 @@ export class Game {
             x: 64 * 3.5,
             y: 64 * 4.5,
           },
-          state: STATES.IDLE_RIGHT
+          state: STATES.IDLE_RIGHT,
         },
       },
       2: {
@@ -67,7 +68,7 @@ export class Game {
             x: 64 * 1.5,
             y: 64 * 2,
           },
-          state: STATES.IDLE_RIGHT
+          state: STATES.IDLE_RIGHT,
         },
       },
       3: {
@@ -88,47 +89,55 @@ export class Game {
             x: 64 * 12.5,
             y: 64 * 2.5,
           },
-          state: STATES.IDLE_LEFT
+          state: STATES.IDLE_LEFT,
         },
       },
     };
 
+    this.resetPlayer();
+
+    this.overlay = {
+      opacity: 1,
+    };
+    this.tween = gsap.to(this.overlay, {
+      opacity: 0,
+      duration: 1,
+    });
+  }
+
+  resetPlayer() {
     this.player.set({
       position: this.levels[this.level].player.position,
       collisionBlocks: this.levels[this.level].collisionBlocks,
       state: this.levels[this.level].player.state,
     });
-
-    this.overlay = {
-      opacity: 0,
-    };
   }
 
   render(deltaTime) {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
     this.levels[this.level].background.draw(this.ctx);
-    this.levels[this.level].collisionBlocks.forEach((collisionBlock) => {
-      collisionBlock.draw(this.ctx);
-    });
+    if (this.input.debug)
+      this.levels[this.level].collisionBlocks.forEach((collisionBlock) => {
+        collisionBlock.draw(this.ctx);
+      });
     this.levels[this.level].doors.forEach((door) => {
       door.draw(this.ctx);
       door.update(deltaTime);
-      door.onComplete = () => {
-        this.ctx.save();
-        this.ctx.globalAlpha = this.overlay.opacity;
-        this.ctx.fillStyle = "black";
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.restore();
-        gsap.to(this.overlay, {
-          opacity: 1,
-        });
+      door.onOpen = () => {
+        this.tween.reverse();
+        if (this.overlay.opacity > 0.9 && this.level < this.maxLevel) {
+          this.level += 1;
+          this.resetPlayer();
+          this.tween.play();
+        }
       };
     });
 
     this.player.draw(this.ctx);
     this.player.update(deltaTime);
     this.playerMovement();
+
+    this.changeSceneEffect();
   }
 
   playerMovement() {
@@ -159,7 +168,7 @@ export class Game {
   }
 
   createCollisionBlocks(data) {
-    const collisionBlocks = []
+    const collisionBlocks = [];
     const data2D = data.chunk(16);
     data2D.forEach((row, yIndex) => {
       row.forEach((cell, xIndex) => {
@@ -176,5 +185,13 @@ export class Game {
       });
     });
     return collisionBlocks;
+  }
+
+  changeSceneEffect() {
+    this.ctx.save();
+    this.ctx.globalAlpha = this.overlay.opacity;
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.restore();
   }
 }

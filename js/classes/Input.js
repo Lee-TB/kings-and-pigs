@@ -25,8 +25,10 @@ export class Input {
       },
     };
 
+    this.debug = false;
+
     window.addEventListener("keydown", (event) => {
-      const key = event.key.toLocaleLowerCase();
+      const key = event.key.toLocaleLowerCase();      
       switch (key) {
         case "w":
         case " ":
@@ -40,6 +42,9 @@ export class Input {
           break;
         case "e":
           this.activatedKeys[key].pressed = true;
+          break;
+        case "/":
+          this.debug = !this.debug;
           break;
       }
     });
