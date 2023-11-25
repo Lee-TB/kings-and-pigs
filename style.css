@@ -1,0 +1,30 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+canvas {
+  max-width: 100%;
+}
+
+body {
+  background: black;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.hidden {
+  display: none;
+}
+
+#container {
+  display: flex;
+  justify-content: center;
+}
+
+#canvasWrapper {
+  display: flex;
+}

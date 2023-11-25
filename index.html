@@ -4,17 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Kings and Pigs</title>
-    <style>
-      canvas {
-        max-width: 100%;
-      }
-      body {
-        background: black;
-      }
-      .hidden {
-        display: none;
-      }
-    </style>
+    <link rel="stylesheet" href="style.css">
     <!-- GSAP -->
     <script
       src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
@@ -24,7 +14,12 @@
     ></script>
   </head>
   <body>
-    <canvas></canvas>
+    <div id="container">
+      <div id="canvasWrapper">
+        <canvas></canvas>
+      </div>
+    </div>
+    <!-- Game assets -->
     <div class="hidden">
       <!-- background -->
       <img src="./assets/img/backgroundLevel1.png" id="backgroundLevel1" />
