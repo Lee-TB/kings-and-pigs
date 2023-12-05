@@ -143,6 +143,7 @@ export class Game {
   playerMovement() {
     if (
       this.input.activatedKeys.w.pressed ||
+      this.input.activatedKeys.arrowup.pressed ||
       this.input.activatedKeys[" "].pressed
     ) {
       const enterDoorIndex = this.findIndexOfEnterDoor();
@@ -157,8 +158,16 @@ export class Game {
     }
 
     this.player.velocity.x = 0;
-    if (this.input.activatedKeys.a.pressed) this.player.velocity.x = -2;
-    if (this.input.activatedKeys.d.pressed) this.player.velocity.x = 2;
+    if (
+      this.input.activatedKeys.a.pressed ||
+      this.input.activatedKeys.arrowleft.pressed
+    )
+      this.player.velocity.x = -2;
+    if (
+      this.input.activatedKeys.d.pressed ||
+      this.input.activatedKeys.arrowright.pressed
+    )
+      this.player.velocity.x = 2;
   }
 
   findIndexOfEnterDoor() {

@@ -23,12 +23,23 @@ export class Input {
       e: {
         pressed: false,
       },
+      arrowright: {
+        pressed: false,
+      },
+      arrowleft: {
+        pressed: false,
+      },
+      arrowup: {
+        pressed: false,
+      },
+      arrowdown: {
+        pressed: false,
+      },
     };
-
     this.debug = false;
 
     window.addEventListener("keydown", (event) => {
-      const key = event.key.toLocaleLowerCase();      
+      const key = event.key.toLocaleLowerCase();
       switch (key) {
         case "w":
         case " ":
@@ -41,6 +52,18 @@ export class Input {
           this.activatedKeys[key].pressed = true;
           break;
         case "e":
+          this.activatedKeys[key].pressed = true;
+          break;
+        case "arrowright":
+          this.activatedKeys[key].pressed = true;
+          break;
+        case "arrowleft":
+          this.activatedKeys[key].pressed = true;
+          break;
+        case "arrowup":
+          this.activatedKeys[key].pressed = true;
+          break;
+        case "arrowdown":
           this.activatedKeys[key].pressed = true;
           break;
         case "/":
@@ -63,6 +86,18 @@ export class Input {
           this.activatedKeys[key].pressed = false;
           break;
         case "e":
+          this.activatedKeys[key].pressed = false;
+          break;
+        case "arrowright":
+          this.activatedKeys[key].pressed = false;
+          break;
+        case "arrowleft":
+          this.activatedKeys[key].pressed = false;
+          break;
+        case "arrowup":
+          this.activatedKeys[key].pressed = false;
+          break;
+        case "arrowdown":
           this.activatedKeys[key].pressed = false;
           break;
       }
